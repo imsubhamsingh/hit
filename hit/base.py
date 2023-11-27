@@ -1,4 +1,5 @@
 import os
+from . import data
 
 
 def write_tree(directory="."):
@@ -18,7 +19,8 @@ def write_tree(directory="."):
                 If the entry is a file, we need to write it to the object store.
                 This part is not implemented yet.
                 """
-                print(full)
+                with open(full, "rb") as f:
+                    print(data.hash_object(f.read(), full))
             elif entry.is_dir(follow_symlinks=False):
                 # If the entry is a directory, we recursively call this function on that directory.
                 write_tree(full)
