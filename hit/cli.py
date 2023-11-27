@@ -62,4 +62,4 @@ def cat_file(args):
                                    'args.object' is expected to be the object id of the object to be retrieved.
     """
     sys.stdout.flush()
-    sys.stdout.buffer.write(data.get_object(args.object))
+    sys.stdout.buffer.write(data.get_object(args.object, expected=None))

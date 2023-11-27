@@ -3,6 +3,7 @@ import hashlib
 
 
 GIT_DIR = ".hit"
+BLOB = "blob"
 
 
 def init():
@@ -15,7 +16,7 @@ def init():
     os.makedirs(f"{GIT_DIR}/objects", exist_ok=True)
 
 
-def hash_object(data):
+def hash_object(data, type_=BLOB):
     """
     This function takes in data as an argument, hashes it using SHA1,
     and then writes the hashed data into a file. The file is stored
@@ -24,27 +25,37 @@ def hash_object(data):
 
     Args:
         data (bytes): The data to be hashed and written into a file.
+        type_ (str, optional): The type of the object. Defaults to BLOB.
 
     Returns:
         str: The object id (oid) of the hashed data.
     """
-    oid = hashlib.sha1(data).hexdigest()
+    obj = type_.encode() + b"\x00" + data
+    oid = hashlib.sha1(obj).hexdigest()
     with open(f"{GIT_DIR}/objects/{oid}", "wb") as out:
-        out.write(data)
+        out.write(obj)
 
     return oid
 
 
-def get_object(oid):
+def get_object(oid, expected=BLOB):
     """
     This function opens a file in binary mode for reading.
     The file is located in the 'objects' directory inside GIT_DIR and its name is the object id (oid).
 
     Args:
         oid (str): The object id of the file to be read.
+        expected (str, optional): The expected type of the object. Defaults to BLOB.
 
     Returns:
         bytes: The content of the file as bytes.
     """
     with open(f"{GIT_DIR}/objects/{oid}", "rb") as f:
-        return f.read()
+        obj = f.read()
+    type_, _, content = obj.partition(b"\x00")
+    type_ = type_.decode()
+
+    if expected is not None:
+        assert type_ == expected, f"Expected {expected}, got {type_}"
+
+    return content
