@@ -1,5 +1,5 @@
 import argparse
-
+import os
 from . import data
 
 
@@ -22,3 +22,4 @@ def parse_args():
 
 def init(args):
     data.init()
+    print(f"Initialized empty hit repository in {os.getcwd()}/{data.GIT_DIR}")
