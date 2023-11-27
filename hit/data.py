@@ -1,9 +1,7 @@
 import os
 import hashlib
 
-
-GIT_DIR = ".hit"
-BLOB = "blob"
+from .constants import GIT_DIR, BLOB
 
 
 def init():
