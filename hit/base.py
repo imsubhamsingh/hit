@@ -11,6 +11,8 @@ def write_tree(directory="."):
     with os.scandir(directory) as it:
         for entry in it:
             full = f"{directory}/{entry.name}"
+            if is_ignored(full):
+                continue
             if entry.is_file(follow_symlinks=False):
                 """
                 If the entry is a file, we need to write it to the object store.
@@ -26,3 +28,7 @@ def write_tree(directory="."):
     we need to create the tree object.
     This part is not implemented yet.
     """
+
+
+def is_ignored(path):
+    return ".hit" in path.split("/")
